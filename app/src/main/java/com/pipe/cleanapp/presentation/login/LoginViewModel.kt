@@ -40,7 +40,7 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
 
     fun login(loginRequest: LoginRequest){
         viewModelScope.launch {
-            loginUseCase.invoke(loginRequest)
+            loginUseCase.execute(loginRequest)
                 .onStart {
                     setLoading()
                 }

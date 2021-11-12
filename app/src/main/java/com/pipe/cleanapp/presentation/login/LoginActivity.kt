@@ -1,9 +1,10 @@
 package com.pipe.cleanapp.presentation.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +19,7 @@ import com.pipe.cleanapp.presentation.common.extension.isEmail
 import com.pipe.cleanapp.presentation.common.extension.showGenericAlertDialog
 import com.pipe.cleanapp.presentation.common.extension.showToast
 import com.pipe.cleanapp.presentation.main.MainActivity
+import com.pipe.cleanapp.presentation.register.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -32,21 +34,28 @@ class LoginActivity : AppCompatActivity() {
     @Inject
     lateinit var pref: SharedPrefs
 
+    private val openRegisterActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if(result.resultCode == RESULT_OK){
+            goToMainActivity()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_login)
+        setContentView(binding.root)
         login()
         observe()
     }
 
     private fun observe(){
-        viewModel.mState.flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-            .onEach { state -> handleState(state) }
+        viewModel.mState
+            .flowWithLifecycle(lifecycle,  Lifecycle.State.STARTED)
+            .onEach { state -> handleStateChange(state) }
             .launchIn(lifecycleScope)
     }
 
-    private fun handleState(state: LoginActivityState) {
+    private fun handleStateChange(state: LoginActivityState) {
         when(state){
             is LoginActivityState.ShowToast -> showToast(state.message)
             is LoginActivityState.IsLoading -> handleLoading(state.isLoading)
@@ -58,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleLoading(isLoading: Boolean) {
         binding.loginButton.isEnabled = !isLoading
+        binding.registerButton.isEnabled = !isLoading
         binding.loadingProgressBar.isIndeterminate = isLoading
         if (!isLoading){
             binding.loadingProgressBar.progress = 0
@@ -74,18 +84,23 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun goToRegisterActivity(){
+        binding.registerButton.setOnClickListener{
+            openRegisterActivity.launch(Intent(this@LoginActivity, RegisterActivity::class.java))
+        }
+    }
+
     private fun handleErrorLogin(rawResponse: WrappedResponse<LoginResponse>) {
         showGenericAlertDialog(rawResponse.message)
     }
 
-
-
     private fun login(){
-        binding.loginButton.setOnClickListener{
+        binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
             if(validate(email, password)){
-                viewModel.login(LoginRequest(email, password))
+                val loginRequest = LoginRequest(email, password)
+                viewModel.login(loginRequest)
             }
         }
     }

@@ -17,4 +17,7 @@
     <string name="button_text_i_dont_have_account">I dont have account</string>
     <string name="error_password_not_valid">Password is not valid</string>
     <string name="error_email_not_valid">Email is not valid</string>
+    <string name="button_text_back">GO BACK</string>
+    <string name="header_register">Create account</string>
+    <string name="header_description_register">Create a new account to get all the feature of the app</string>
 </resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.register.RegisterActivity">
+
+    <LinearLayout
+        android:padding="@dimen/padding_medium"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:text="@string/button_text_back"
+            android:layout_marginTop="@dimen/margin_large"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            app:icon="@drawable/ic_baseline_arrow_back_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_large"
+            android:text="@string/header_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"/>
+
+        <TextView
+            android:text="@string/header_description_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ProgressBar
+            android:layout_marginVertical="@dimen/margin_small"
+            android:id="@+id/loading_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/progress_bar_height" />
+    </LinearLayout>
+
+</ScrollView>
